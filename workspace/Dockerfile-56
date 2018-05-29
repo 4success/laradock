@@ -101,6 +101,30 @@ RUN if [ ${INSTALL_IMAP} = true ]; then \
 ;fi
 
 #####################################
+# OCI8:
+#####################################
+ARG INSTALL_OCI8=false
+ENV INSTALL_OCI8 ${INSTALL_OCI8}
+
+COPY ./oci8.ini /tmp/
+
+ENV LD_LIBRARY_PATH /usr/local/instantclient/
+
+RUN if [ ${INSTALL_OCI8} = true ]; then \
+    apt-get update && \
+    apt-get install -y zip unzip libaio1 wget && \
+    wget "https://s3-sa-east-1.amazonaws.com/4success-assets/instantclient-basic-linux.x64-12.2.0.1.0.zip" -P "/tmp" && \
+    wget "https://s3-sa-east-1.amazonaws.com/4success-assets/instantclient-sdk-linux.x64-12.2.0.1.0.zip" -P "/tmp" && \
+    unzip /tmp/instantclient-basic-linux.x64-12.2.0.1.0.zip -d /usr/local/ && \
+    unzip /tmp/instantclient-sdk-linux.x64-12.2.0.1.0.zip -d /usr/local/ && \
+    ln -s /usr/local/instantclient_12_2 /usr/local/instantclient && \
+    ln -s /usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so && \
+    export LD_LIBRARY_PATH=/usr/local/instantclient && \
+    echo 'instantclient,/usr/local/instantclient' | pecl install oci8 && \
+    cp /tmp/oci8.ini /etc/php/5.6/cli/conf.d/oci8.ini \
+;fi
+
+#####################################
 # Set Timezone
 #####################################
 
