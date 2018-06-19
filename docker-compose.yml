@@ -110,7 +110,7 @@ services:
         - workspace
       extra_hosts:
         - "dockerhost:${DOCKER_HOST_IP}"
-        - "localhost.api.sh4w.4success.com.br:${DOCKER_HOST_IP}"
+        - "${PHP_FPM_HOST_API}:${DOCKER_HOST_IP}"
       environment:
         - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
       networks:
